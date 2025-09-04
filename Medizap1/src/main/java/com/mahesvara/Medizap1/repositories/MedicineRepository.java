@@ -10,4 +10,6 @@ public interface MedicineRepository extends JpaRepository<MedicineModel, Integer
 
 	MedicineModel findByName(String name);
 
+	List<MedicineModel> findByNameContainingIgnoreCase(String name);
+
 }

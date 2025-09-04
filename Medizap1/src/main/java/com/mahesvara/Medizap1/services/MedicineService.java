@@ -1,5 +1,6 @@
 package com.mahesvara.Medizap1.services;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +21,11 @@ public class MedicineService {
 		return repo.findAll();
 	}
 
-	public MedicineModel searchMedicine(String name) {
+	public List<MedicineModel> searchMedicine(String name) {
 		// TODO Auto-generated method stub
-		return repo.findByName(name);
+		return  repo.findByNameContainingIgnoreCase(name);
+			
+		
 	}
 
 	public MedicineModel addMedicine(MedicineModel med) {

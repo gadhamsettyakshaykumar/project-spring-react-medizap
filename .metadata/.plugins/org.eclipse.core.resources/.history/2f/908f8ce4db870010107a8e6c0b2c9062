@@ -1,0 +1,9 @@
+package com.mahesvara.Medizap1.repositories;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.mahesvara.Medizap1.model.CartModel;
+
+public interface CartRepository extends JpaRepository<CartModel, Integer>{
+
+}

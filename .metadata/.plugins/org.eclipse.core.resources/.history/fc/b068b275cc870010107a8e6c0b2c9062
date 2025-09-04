@@ -1,0 +1,15 @@
+package com.mahesvara.Medizap1.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.mahesvara.Medizap1.repositories.CartInterface;
+
+@Service
+public class CartService {
+	
+	@Autowired
+	CartInterface repo;
+	
+
+}

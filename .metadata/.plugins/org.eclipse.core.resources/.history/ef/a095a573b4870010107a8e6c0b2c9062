@@ -1,0 +1,5 @@
+package com.mahesvara.Medizap1.repositories;
+
+public interface MedicineRepository {
+
+}

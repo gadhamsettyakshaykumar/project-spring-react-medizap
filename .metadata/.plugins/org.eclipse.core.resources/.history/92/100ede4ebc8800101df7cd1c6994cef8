@@ -1,0 +1,54 @@
+package com.mahesvara.Medizap1.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.mahesvara.Medizap1.model.CartModel;
+import com.mahesvara.Medizap1.services.CartService;
+
+@RestController
+@RequestMapping("/api/cart")
+@CrossOrigin(origins = "*")
+public class CartController {
+
+    private final CartService service;
+
+    public CartController(CartService service) {
+        this.service = service;
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<CartModel> addToCart(@RequestParam int medicine_id, @RequestParam int quantity) {
+        if (quantity <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            CartModel item = service.addtocart(medicine_id, quantity);
+            return ResponseEntity.status(HttpStatus.CREATED).body(item);
+        } catch (RuntimeException ex) {
+            if (ex.getMessage().contains("Medicine not found")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    
+    @GetMapping("/items")
+    public ResponseEntity<List<CartModel>> getAllItems() {
+        return ResponseEntity.ok(service.getallitems());
+    }
+
+    
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity<CartModel> removeCart(@PathVariable int id) {
+        CartModel removed = service.removecartItems(id);
+        if (removed == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(removed);
+    }
+}

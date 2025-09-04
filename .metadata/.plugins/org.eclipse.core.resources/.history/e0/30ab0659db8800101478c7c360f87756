@@ -1,0 +1,70 @@
+package com.mahesvara.Medizap1.controller;
+
+import com.mahesvara.Medizap1.model.CartModel;
+import com.mahesvara.Medizap1.services.CartService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequestMapping("/api/cart")
+public class CartController {
+
+    private final CartService cartService;
+
+    public CartController(CartService cartService) {
+        this.cartService = cartService;
+    }
+
+    // Add item to cart
+    @PostMapping("/add")
+    public ResponseEntity<CartModel> addToCart(@RequestParam int medicine_id, @RequestParam int quantity) {
+        CartModel addedItem = cartService.addtocart(medicine_id, quantity);
+        return ResponseEntity.ok(addedItem);
+    }
+
+    // Get all cart items
+
+@GetMapping("/items")
+public ResponseEntity<List<CartModel>> getAllItems() {
+    List<CartModel> items = cartService.getallitems();
+    return ResponseEntity.ok(items);
+}
+
+    // Update quantity of a cart item
+    @PutMapping("/update/{id}")
+    public ResponseEntity<CartModel> updateQuantity(@PathVariable int id, @RequestParam int quantity) {
+        CartModel updatedItem = cartService.updateQuantity(id, quantity);
+        return ResponseEntity.ok(updatedItem);
+    }
+
+    // Remove a cart item by ID (returns 204 if deleted, 404 if not found)
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity<Void> removeItem(@PathVariable int id) {
+        boolean removed = cartService.removeById(id);
+        if (removed) {
+            return ResponseEntity.noContent().build(); // 204 No Content
+        } else {
+            return ResponseEntity.notFound().build(); // 404 Not Found
+        }
+    }
+
+    // Remove and return cart item
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<CartModel> removeCartItem(@PathVariable int id) {
+        CartModel removedItem = cartService.removecartItems(id);
+        if (removedItem != null) {
+            return ResponseEntity.ok(removedItem);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+    // Clear all cart items
+    @DeleteMapping("/clear")
+    public ResponseEntity<String> clearCart() {
+        cartService.clearAll();
+        return ResponseEntity.ok("Cart cleared successfully.");
+    }
+}

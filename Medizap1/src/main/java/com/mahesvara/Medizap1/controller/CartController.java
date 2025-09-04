@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/cart")
+@CrossOrigin(origins = "http://localhost:5173") // ✅ Match frontend port
 public class CartController {
 
     private final CartService cartService;
@@ -17,19 +18,19 @@ public class CartController {
         this.cartService = cartService;
     }
 
-    // Add item to cart
     @PostMapping("/add")
     public ResponseEntity<CartModel> addToCart(@RequestParam int medicine_id, @RequestParam int quantity) {
         CartModel addedItem = cartService.addtocart(medicine_id, quantity);
         return ResponseEntity.ok(addedItem);
     }
 
-
+ 
     @GetMapping("/items")
-	public ResponseEntity<List<CartModel>> getAllItems() {
-			List<CartModel> items = cartService.getallitems();
-			return ResponseEntity.ok(items);
-		}
+    public ResponseEntity<List<CartModel>> getAllItems() {
+        List<CartModel> items = cartService.getallitems();
+        return ResponseEntity.ok(items);
+    }
+
 
     @PutMapping("/update/{id}")
     public ResponseEntity<CartModel> updateQuantity(@PathVariable int id, @RequestParam int quantity) {
@@ -37,18 +38,18 @@ public class CartController {
         return ResponseEntity.ok(updatedItem);
     }
 
-   
+  
     @DeleteMapping("/remove/{id}")
     public ResponseEntity<Void> removeItem(@PathVariable int id) {
         boolean removed = cartService.removeById(id);
         if (removed) {
-            return ResponseEntity.noContent().build(); 
+            return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
         }
     }
 
-    // Remove and return cart item
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<CartModel> removeCartItem(@PathVariable int id) {
         CartModel removedItem = cartService.removecartItems(id);
@@ -59,7 +60,7 @@ public class CartController {
         }
     }
 
-    // Clear all cart items
+
     @DeleteMapping("/clear")
     public ResponseEntity<String> clearCart() {
         cartService.clearAll();

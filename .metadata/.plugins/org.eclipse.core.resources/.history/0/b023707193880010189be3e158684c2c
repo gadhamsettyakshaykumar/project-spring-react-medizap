@@ -1,0 +1,153 @@
+package com.mahesvara.Medizap1.controller;
+
+import java.util.List;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import com.mahesvara.Medizap1.model.CartModel;
+import com.mahesvara.Medizap1.services.CartService;
+
+@RestController
+@RequestMapping("/api/cart")
+@CrossOrigin(origins = "http://localhost:8081")
+public class CartController {
+
+    private final CartService service;
+    package com.mahesvara.Medizap1.controller;
+
+    import java.util.List;
+    import java.util.stream.Collectors;
+
+    import jakarta.validation.Valid;
+
+    import org.springframework.http.HttpStatus;
+    import org.springframework.http.ResponseEntity;
+    import org.springframework.web.bind.annotation.*;
+
+    import com.mahesvara.Medizap1.dto.AddToCartRequest;
+    import com.mahesvara.Medizap1.dto.CartItemDTO;
+    import com.mahesvara.Medizap1.dto.CartSummaryDTO;
+    import com.mahesvara.Medizap1.model.CartModel;
+    import com.mahesvara.Medizap1.services.CartService;
+
+    @RestController
+    @RequestMapping("/api/cart")
+    @CrossOrigin(origins = "http://localhost:8081")
+    public class CartController {
+
+        private final CartService service;
+
+        public CartController(CartService service) {
+            this.service = service;
+        }
+
+        // ---- Helper mapper: Entity -> DTO
+        private CartItemDTO toDTO(CartModel cart) {
+            return new CartItemDTO(
+                cart.getId(),
+                cart.getMed().getId(),
+                cart.getMed().getName(),
+                cart.getQuantity(),
+                cart.getTotalPrice()
+            );
+        }
+
+        // ---- (A) Add to cart (JSON body)
+        @PostMapping("/add")
+        public ResponseEntity<CartItemDTO> addToCart(@Valid @RequestBody AddToCartRequest req) {
+            CartModel item = service.addtocart(req.getMedicineId(), req.getQuantity());
+            return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(item));
+        }
+
+        // ---- (A') If you still want to support query params:
+        @PostMapping("/add-qp")
+        public ResponseEntity<CartItemDTO> addToCartQueryParams(@RequestParam("medicine_id") int medicineId,
+                                                                @RequestParam int quantity) {
+            if (quantity <= 0) return ResponseEntity.badRequest().build();
+            CartModel item = service.addtocart(medicineId, quantity);
+            return ResponseEntity.status(HttpStatus.CREATED).body(toDTO(item));
+        }
+
+        // ---- (B) Get all items
+        @GetMapping("/items")
+        public ResponseEntity<List<CartItemDTO>> getAllItems() {
+            List<CartItemDTO> items = service.getallitems()
+                                             .stream()
+                                             .map(this::toDTO)
+                                             .collect(Collectors.toList());
+            return ResponseEntity.ok(items);
+        }
+
+        // ---- (C) Update quantity of a line
+        @PutMapping("/items/{id}")
+        public ResponseEntity<CartItemDTO> updateQuantity(@PathVariable int id,
+                                                          @RequestParam("quantity") int quantity) {
+            if (quantity <= 0) return ResponseEntity.badRequest().build();
+            CartModel updated = service.updateQuantity(id, quantity);
+            return ResponseEntity.ok(toDTO(updated));
+        }
+
+        // ---- (D) Remove a line
+        @DeleteMapping("/remove/{id}")
+        public ResponseEntity<Void> removeCart(@PathVariable int id) {
+            boolean existed = service.removeById(id);
+            return existed ? ResponseEntity.noContent().build()
+                           : ResponseEntity.notFound().build();
+        }
+
+        // ---- (E) Clear cart
+        @DeleteMapping("/clear")
+        public ResponseEntity<Void> clearCart() {
+            service.clearAll();
+            return ResponseEntity.noContent().build();
+        }
+
+        // ---- (F) Summary
+        @GetMapping("/summary")
+        public ResponseEntity<CartSummaryDTO> summary() {
+            List<CartModel> items = service.getallitems();
+            int totalItems = items.size();
+            int totalQty = items.stream().mapToInt(CartModel::getQuantity).sum();
+            double totalAmount = items.stream().mapToDouble(CartModel::getTotalPrice).sum();
+            return ResponseEntity.ok(new CartSummaryDTO(totalItems, totalQty, totalAmount));
+        }
+    }
+
+    public CartController(CartService service) {
+        this.service = service;
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<CartModel> addToCart(@RequestParam int medicine_id, @RequestParam int quantity) {
+        if (quantity <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        try {
+            CartModel item = service.addtocart(medicine_id, quantity);
+            return ResponseEntity.status(HttpStatus.CREATED).body(item);
+        } catch (RuntimeException ex) {
+            if (ex.getMessage().contains("Medicine not found")) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+    }
+
+    
+    @GetMapping("/items")
+    public ResponseEntity<List<CartModel>> getAllItems() {
+        return ResponseEntity.ok(service.getallitems());
+    }
+
+    
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity<CartModel> removeCart(@PathVariable int id) {
+        CartModel removed = service.removecartItems(id);
+        if (removed == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(removed);
+    }
+}

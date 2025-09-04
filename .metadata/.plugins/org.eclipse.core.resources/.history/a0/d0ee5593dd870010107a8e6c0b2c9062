@@ -1,0 +1,32 @@
+package com.mahesvara.Medizap1.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.mahesvara.Medizap1.model.CartModel;
+import com.mahesvara.Medizap1.model.MedicineModel;
+import com.mahesvara.Medizap1.repositories.CartRepository;
+import com.mahesvara.Medizap1.repositories.MedicineRepository;
+
+@Service
+public class CartService {
+	
+	@Autowired
+	CartRepository repo;
+	
+	@Autowired
+	MedicineRepository med;
+
+	public CartModel getallCartItems(int medicine_id,int quantity) {
+		// TODO Auto-generated method stub
+		MedicineModel med1 = med.findById(medicine_id)
+				.orElseThrow(()->new RuntimeException("Medicine not found"));
+		CartModel cart = new CartModel();
+		cart.setMed(med1);
+		cart.setQuantity(quantity);
+		cart.setTotalPrice(med1.getPrice()*quantity);
+		return repo.save(cart);
+	}
+	
+
+}

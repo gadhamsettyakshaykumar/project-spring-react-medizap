@@ -1,0 +1,23 @@
+package com.mahesvara.Medizap1.model;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+
+@Entity
+public class CartModel {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
+	
+	@ManyToOne
+	@JoinColumn(name = "medicine_id", nullable = false)
+	private MedicineModel med;
+	
+	private int quantity;
+	private double totalPrice;
+
+}

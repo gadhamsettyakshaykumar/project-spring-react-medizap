@@ -1,0 +1,31 @@
+@RestController
+@RequestMapping("/api/cart")
+@CrossOrigin(origins = "http://localhost:5173")
+public class CartController {
+
+    @Autowired
+    private CartService service;
+
+    @PostMapping("/add")
+    public ResponseEntity<CartModel> addToCart(@RequestParam int medicine_id, @RequestParam int quantity) {
+        if (quantity <= 0) {
+            return ResponseEntity.badRequest().build();
+        }
+        CartModel cartItem = service.addtocart(medicine_id, quantity);
+        return ResponseEntity.status(201).body(cartItem);
+    }
+
+    @GetMapping("/items")
+    public ResponseEntity<List<CartModel>> getAllItems() {
+        return ResponseEntity.ok(service.getallitems());
+    }
+
+    @DeleteMapping("/remove/{id}")
+    public ResponseEntity<CartModel> removeCart(@PathVariable int id) {
+        CartModel removedItem = service.removecartItems(id);
+        if (removedItem == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(removedItem);
+    }
+}

@@ -1,0 +1,22 @@
+package com.mahesvara.Medizap1.services;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.mahesvara.Medizap1.model.MedicineModel;
+import com.mahesvara.Medizap1.repositories.MedicineRepository;
+
+@Service
+public class MedicineService {
+	
+	@Autowired
+	MedicineRepository repo;
+
+	public List<MedicineModel> getAll() {
+		// TODO Auto-generated method stub
+		return repo.findAll();
+	}
+
+}
