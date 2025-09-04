@@ -1,0 +1,156 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* MediZap Design System - Healthcare themed colors and components */
+
+@layer base {
+  :root {
+    /* Base colors */
+    --background: 210 20% 98%;
+    --foreground: 215 25% 27%;
+
+    /* Medical Blue Primary */
+    --primary: 210 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 210 100% 45%;
+
+    /* Medical Green Secondary */
+    --secondary: 142 76% 36%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-hover: 142 76% 32%;
+
+    /* Card styling */
+    --card: 0 0% 100%;
+    --card-foreground: 215 25% 27%;
+    --card-border: 210 20% 90%;
+    --card-shadow: 210 20% 85%;
+
+    /* Alert/Warning colors */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    --error: 0 84% 60%;
+    --error-foreground: 0 0% 100%;
+
+    /* Form elements */
+    --input: 210 20% 96%;
+    --input-border: 210 20% 85%;
+    --input-focus: 210 100% 50%;
+
+    /* Muted colors */
+    --muted: 210 20% 94%;
+    --muted-foreground: 215 15% 60%;
+
+    /* Border and radius */
+    --border: 210 20% 90%;
+    --radius: 0.5rem;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(210 20% 85% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(210 20% 85% / 0.1), 0 2px 4px -1px hsl(210 20% 85% / 0.06);
+    --shadow-lg: 0 10px 15px -3px hsl(210 20% 85% / 0.1), 0 4px 6px -2px hsl(210 20% 85% / 0.05);
+
+    /* Transitions */
+    --transition: all 0.2s ease-in-out;
+  }
+
+  .dark {
+    --background: 215 28% 17%;
+    --foreground: 210 20% 98%;
+    --card: 215 28% 19%;
+    --card-foreground: 210 20% 98%;
+    --primary: 210 100% 60%;
+    --secondary: 142 76% 46%;
+    --muted: 215 28% 22%;
+    --muted-foreground: 215 15% 70%;
+    --border: 215 28% 25%;
+    --input: 215 28% 22%;
+    --card-border: 215 28% 25%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-muted;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/30 rounded-full;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
+}
+
+/* Custom component styles */
+@layer components {
+  .medicine-card {
+    @apply bg-card border border-card-border rounded-lg p-4 shadow-sm hover:shadow-md transition-all duration-200 hover:scale-[1.02];
+  }
+
+  .cart-table {
+    @apply w-full border-collapse border border-border rounded-lg overflow-hidden;
+  }
+
+  .cart-table th,
+  .cart-table td {
+    @apply border-b border-border px-4 py-3 text-left;
+  }
+
+  .cart-table th {
+    @apply bg-muted font-semibold;
+  }
+
+  .btn-primary {
+    @apply bg-primary text-primary-foreground px-4 py-2 rounded-lg font-medium hover:bg-primary-hover transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground px-4 py-2 rounded-lg font-medium hover:bg-secondary-hover transition-colors duration-200;
+  }
+
+  .btn-outline {
+    @apply border border-border bg-background text-foreground px-4 py-2 rounded-lg font-medium hover:bg-muted transition-colors duration-200;
+  }
+
+  .btn-danger {
+    @apply bg-error text-error-foreground px-3 py-1 rounded text-sm font-medium hover:bg-error/90 transition-colors duration-200;
+  }
+
+  .input-field {
+    @apply w-full px-3 py-2 bg-input border border-input-border rounded-lg focus:outline-none focus:ring-2 focus:ring-input-focus focus:border-transparent transition-all duration-200;
+  }
+
+  .quantity-input {
+    @apply w-16 px-2 py-1 text-center bg-input border border-input-border rounded focus:outline-none focus:ring-1 focus:ring-input-focus;
+  }
+
+  .alert-success {
+    @apply bg-success/10 text-success border border-success/20 rounded-lg p-3;
+  }
+
+  .alert-error {
+    @apply bg-error/10 text-error border border-error/20 rounded-lg p-3;
+  }
+
+  .loading-spinner {
+    @apply animate-spin rounded-full h-6 w-6 border-b-2 border-primary;
+  }
+}
